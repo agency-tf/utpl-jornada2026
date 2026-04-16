@@ -1,491 +1,208 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  Download, Users, Search, Filter, Calendar, MapPin, BarChart3, 
-  BookOpen, GraduationCap, FileSpreadsheet, LayoutGrid, XCircle
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Jornada Virtual 2026 | UTPL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --utpl-blue: #003366;
+            --utpl-yellow: #FFCC00;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .bg-utpl { background-color: var(--utpl-blue); }
+        .text-utpl { color: var(--utpl-blue); }
+        .accent-line {
+            height: 6px;
+            background: linear-gradient(90deg, var(--utpl-blue) 0%, var(--utpl-yellow) 100%);
+        }
+        .btn-utpl {
+            background-color: var(--utpl-blue);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-utpl:hover {
+            background-color: #002347;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 51, 102, 0.4);
+        }
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--utpl-yellow);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
 
-/**
- * DATOS DE ESTUDIANTES
- * Rango de fechas: 07/02/2026 al 13/02/2026
- */
-const STUDENT_DATA = [
-  {"Fecha": "2026-02-07", "Nombres": "Angel Sarate", "Cedula": "106547052", "Telefono": "989689148", "Correo": "leonardo.sarate@gmail.com", "Carrera": "Tecnologo", "TIPO": "TEC", "Promotora": "Romina"},
-  {"Fecha": "2026-02-07", "Nombres": "John Quezada", "Cedula": "104865662", "Telefono": "995834016", "Correo": "johnquezadavallejo@gmail.com", "Carrera": "Tecnologo", "TIPO": "TEC", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-07", "Nombres": "Ana Maria Espinoza", "Cedula": "1310180284", "Telefono": "998570975", "Correo": "anamariaespinozacede19806@gmail.com", "Carrera": "Adminitracion de empresas", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-07", "Nombres": "Vielka Lozano Moreira", "Cedula": "1310724339", "Telefono": "967293925", "Correo": "vielkalozano170397@gmail.com", "Carrera": "Psicologia", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-07", "Nombres": "Peter Murillo Lajer", "Cedula": "131472069", "Telefono": "979576311", "Correo": "pettersmurillo22@gmail.com", "Carrera": "Post grado Geestion integrada de recursos hidrigos", "TIPO": "POS", "Promotora": "Romina"},
-  {"Fecha": "2026-02-07", "Nombres": "kiena Delgado Reyes", "Cedula": "1350286793", "Telefono": "985154706", "Correo": "kkadijareyes@gmail.com", "Carrera": "negocios turisticos y gastronomicos", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-07", "Nombres": "Mario Ceme Cedeño", "Cedula": "1312047895", "Telefono": "985174635", "Correo": "mariocedeño@gmail.com", "Carrera": "Post grado Produccion y operaciones industriales", "TIPO": "POS", "Promotora": "Sihomara"},
-  {"Fecha": "2026-02-07", "Nombres": "Arturo Salvador Palma Delgado", "Cedula": "1308855855", "Telefono": "986903837", "Correo": "salvatore19775@gmail.com", "Carrera": "gestion financiera y administracion de riesgos finacieros", "TIPO": "POS", "Promotora": "Romina"},
-  {"Fecha": "2026-02-07", "Nombres": "Luis Albeto sanchez loor", "Cedula": "", "Telefono": "961423935", "Correo": "", "Carrera": "Gestion integrada de recursos hidricos", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-07", "Nombres": "Garcia Sanchez Jean Pierre", "Cedula": "1351094014", "Telefono": "981013664", "Correo": "jeanpierregarciasuarez@gmail.com", "Carrera": "Marketing con mencion en transformacion digital", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-07", "Nombres": "janeth Alexandra Zambrano Quiroz", "Cedula": "1305714733", "Telefono": "988196812", "Correo": "alexazambrano6@gmail.com", "Carrera": "ciencias de la salud", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-07", "Nombres": "Kenllur Carvajal Holguin", "Cedula": "1314164433", "Telefono": "91536805", "Correo": "kenllurcarvajalholguin@gmail.com", "Carrera": "Tecnologias de la informacion", "TIPO": "TEC", "Promotora": "Romina"},
-  {"Fecha": "2026-02-07", "Nombres": "Jesus Toledo Rodrigez", "Cedula": "950276766", "Telefono": "986151723", "Correo": "abrantoledo14@gmail.com", "Carrera": "Gov tech y administracion", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-07", "Nombres": "Cristhian Moreira Gutierrez", "Cedula": "963181574", "Telefono": "963181574", "Correo": "", "Carrera": "Ingieneria en recursos", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-08", "Nombres": "Marcos antonio Tello Contreras", "Cedula": "919763821", "Telefono": "986434520", "Correo": "", "Carrera": "auditoria y contabilidad", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-08", "Nombres": "Silvia Guanoluisa", "Cedula": "1311436008", "Telefono": "964254721", "Correo": "silviag2@homail.com", "Carrera": "auditoria y contabilidad", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-08", "Nombres": "Ingrid Valencia", "Cedula": "1314689736", "Telefono": "939237692", "Correo": "24ingridvalencia.m@gmail.com", "Carrera": "Especializacion en tributacion", "TIPO": "POS", "Promotora": "Romina"},
-  {"Fecha": "2026-02-08", "Nombres": "Michelle Bailon", "Cedula": "1351166200", "Telefono": "979441057", "Correo": "michellebailon.esp@gmail.com", "Carrera": "Post grado educacion con mencion en curriculo y evaluacion educativa", "TIPO": "POS", "Promotora": "Romina"},
-  {"Fecha": "2026-02-08", "Nombres": "Ing. Marjorie Hidalogo Moreno", "Cedula": "909697922", "Telefono": "959631962", "Correo": "marjoriehidalgomoreno@gmail.com", "Carrera": "Marketing con mencion en transformacion digital", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-08", "Nombres": "Angie Blacio", "Cedula": "950747212", "Telefono": "994400051", "Correo": "marjoriehidalgomoreno@gmail.com", "Carrera": "Marketing con mencion en transformacion digital", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-08", "Nombres": "Antonio Anchundia Franco", "Cedula": "1313839787", "Telefono": "983565047", "Correo": "antonioaf97@gmail.com", "Carrera": "Seguridad y salud Ocupacional", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-08", "Nombres": "Jose Moreira Loor", "Cedula": "1313094391", "Telefono": "968307386", "Correo": "moreiraloorjoseantoniogmail.com", "Carrera": "Ingieneria industrial", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-08", "Nombres": "Lucas Piguabe Roberto", "Cedula": "1313094391", "Telefono": "999523873", "Correo": "", "Carrera": "Audiotoria de salud", "TIPO": "POS", "Promotora": "Romina"},
-  {"Fecha": "2026-02-08", "Nombres": "Iris Bravo Vite", "Cedula": "2350414518", "Telefono": "969641831", "Correo": "geanellairis17@gmail.com", "Carrera": "Psicologia", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-08", "Nombres": "Ney Estrada Intriago", "Cedula": "1315404358", "Telefono": "991460497", "Correo": "neyestrada1@gmail.com", "Carrera": "Finanzas", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-08", "Nombres": "David Ramirez Alcivar", "Cedula": "1316365624", "Telefono": "963787487", "Correo": "davijoelramirez19@gmail.com", "Carrera": "Comunicación estrategica mencion comunicación digital", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-09", "Nombres": "Alison Pillasagua", "Cedula": "", "Telefono": "979463370", "Correo": "", "Carrera": "Administracion de empresas", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-09", "Nombres": "Stephano Cabezas Ratti", "Cedula": "1351830342", "Telefono": "984665959", "Correo": "giulio.steoano@gmail.com", "Carrera": "Seguridad y salud Ocupacional", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-09", "Nombres": "Genesis Carrion Verduga", "Cedula": "1313647446", "Telefono": "969050213", "Correo": "carriongenesisv19@gmail.com", "Carrera": "Psicologia", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-09", "Nombres": "Jose Loor Mera", "Cedula": "1312838707", "Telefono": "988349489", "Correo": "jcloorm7@UTPLL.EDU.EC", "Carrera": "Psicologia", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-09", "Nombres": "Marcos Caldero Ceballos", "Cedula": "1308984168", "Telefono": "90431070", "Correo": "", "Carrera": "Ciencias economicas y empresariales", "TIPO": "POS", "Promotora": "Romina"},
-  {"Fecha": "2026-02-10", "Nombres": "Laura Olanda Alcivar Bravo", "Cedula": "1308737475", "Telefono": "984777818", "Correo": "alcivarlaura28@gmail.com", "Carrera": "Seguridad y salud Ocupacional", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-10", "Nombres": "Giuliana Villamra Cedeño", "Cedula": "", "Telefono": "963642759", "Correo": "villamarcedegiuliana@gmail.com", "Carrera": "seguridad y salud ocupacional", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-10", "Nombres": "kaely carrion cedeño", "Cedula": "", "Telefono": "998227374", "Correo": "Keylacarrion11@gmail.com", "Carrera": "educacion basica", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-10", "Nombres": "Rubbi saltos Galarraga", "Cedula": "1312219841", "Telefono": "984777818", "Correo": "", "Carrera": "derecho", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-10", "Nombres": "jaime cruz toala", "Cedula": "1315879575", "Telefono": "992164109", "Correo": "", "Carrera": "espingeneria civil con mencion en alcantarillados y sanamiento Mecanicos de suelos avanzados", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-10", "Nombres": "Pablo Lopez Miranda", "Cedula": "1307772887", "Telefono": "994897813", "Correo": "racariokb8@gmail.com", "Carrera": "Gestion integrada de recursos hidricos", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-10", "Nombres": "William Farmiento", "Cedula": "", "Telefono": "939868601", "Correo": "", "Carrera": "Pscicologia", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-10", "Nombres": "Luis Escudero Lafebe", "Cedula": "1726286216", "Telefono": "981720465", "Correo": "", "Carrera": "Seguridad y salud Ocupacional", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-11", "Nombres": "Gabriel Rivera", "Cedula": "1313751458", "Telefono": "979241895", "Correo": "rtgabriel22@gmail.com", "Carrera": "posgrago medicina familiar  y comunitaria", "TIPO": "POS", "Promotora": "Romina"},
-  {"Fecha": "2026-02-11", "Nombres": "Jimmy Garcia Velez", "Cedula": "1316862836", "Telefono": "983221103", "Correo": "jimmyelric95@gmail.com", "Carrera": "Mencion en blockchain y arquitectura en la nube", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-11", "Nombres": "Zoe Gabriela Muentes Alcivar", "Cedula": "1317123204", "Telefono": "983021653", "Correo": "zoegabrielamuentesalcivar@gmail.com", "Carrera": "Pscicologia", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-11", "Nombres": "Mayra mendoza cedeño", "Cedula": "1309160701", "Telefono": "986802638", "Correo": "mairapatriciamendoza@gmail.com", "Carrera": "Contabilidad y auditoria", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-11", "Nombres": "Yadira Bravo", "Cedula": "1309709820", "Telefono": "987239308", "Correo": "yadiralacivarb@gmail.com", "Carrera": "Adminitracion de empresas", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-11", "Nombres": "Jose Luis Trejo", "Cedula": "1308052289", "Telefono": "969823444", "Correo": "joseluistrejo06@gmail.com", "Carrera": "Ingenieria en enegia", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-12", "Nombres": "Ethan Parraga Solorzano", "Cedula": "1316064961", "Telefono": "992990215", "Correo": "marksjaramillo7777@gmail.com", "Carrera": "Logistica Y Transporte", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-12", "Nombres": "Andrea Auhing Cujilan", "Cedula": "930655956", "Telefono": "997856742", "Correo": "andau92@gmail.com", "Carrera": "Especializacion en gestion de geoinformacion con M.proyectos de Inge", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-12", "Nombres": "Luis Guillermo Ruperti Realbe", "Cedula": "3050523566", "Telefono": "999600622", "Correo": "luis_g01@gmail.com", "Carrera": "Especializacion en gestion de geoinformacion con M.proyectos de Inge", "TIPO": "POS", "Promotora": "Romina"},
-  {"Fecha": "2026-02-12", "Nombres": "Marcos Jaramillo Arias", "Cedula": "1750459131", "Telefono": "992574963", "Correo": "marksjaramillo7777@gmail.com", "Carrera": "estudiante de la UTPL retomar carrera Administracion de Empresas", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-12", "Nombres": "Sebastian Castillo Flores", "Cedula": "1312847849", "Telefono": "958947653", "Correo": "fercasflor1805homail.com", "Carrera": "finanzas", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-12", "Nombres": "Gina Alcivar", "Cedula": "", "Telefono": "99710112", "Correo": "alcivarbgina09gmail.com", "Carrera": "Psicologia", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-13", "Nombres": "Fernando Cañar", "Cedula": "2350113136", "Telefono": "939123636", "Correo": "fercho-evelyn@homail.com", "Carrera": "Turismo", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-13", "Nombres": "Jorge Huerta", "Cedula": "", "Telefono": "939123636", "Correo": "jorgehuerta998", "Carrera": "Seguridas Industrial, mencion prevencion en riesgos laborables", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-13", "Nombres": "Mayra Yepez", "Cedula": "1003803986", "Telefono": "939923803", "Correo": "yepezjoseline4gmail.com", "Carrera": "Especializacion en anestesiologia", "TIPO": "POS", "Promotora": "romina"},
-  {"Fecha": "2026-02-13", "Nombres": "Luis Roldan Pilozo", "Cedula": "137079448", "Telefono": "983565047", "Correo": "", "Carrera": "negocios turisticos y gastronomicos", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-13", "Nombres": "Robertho Anchundia  Franco", "Cedula": "1313839787", "Telefono": "983565047", "Correo": "", "Carrera": "Ingenieria en enegia", "TIPO": "MEL", "Promotora": "Romina"},
-  {"Fecha": "2026-02-13", "Nombres": "Miguel carrera Burbano", "Cedula": "1723096556", "Telefono": "984980153", "Correo": "", "Carrera": "derecho", "TIPO": "MEL", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-13", "Nombres": "Jose Loor Delgado", "Cedula": "1312689829", "Telefono": "958700156", "Correo": "jloor3hotmail.com", "Carrera": "tec Negociacion y ventas", "TIPO": "TEC", "Promotora": "romina"},
-  {"Fecha": "2026-02-13", "Nombres": "Maria Edith Zambrano", "Cedula": "1312274549", "Telefono": "993249804", "Correo": "mezi88htomail.com", "Carrera": "gestion financiera y administracion de riesgos finacieros", "TIPO": "POS", "Promotora": "sihomara"},
-  {"Fecha": "2026-02-13", "Nombres": "victor zambrano casanova", "Cedula": "1309740239", "Telefono": "988981916", "Correo": "emilio19561956hotmail.com", "Carrera": "tec Negociacion y ventas", "TIPO": "TEC", "Promotora": "romina"}
-];
+    <!-- Tarjeta Principal -->
+    <div class="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[620px]">
+        
+        <!-- Panel Izquierdo: Branding -->
+        <div class="md:w-5/12 bg-utpl p-10 flex flex-col justify-center text-white relative">
+            <div class="relative z-10">
+                <img src="https://utpl.edu.ec/recursos/img/utpl_logo1.png" alt="Logo UTPL" class="h-20 mb-8 brightness-0 invert object-contain">
+                
+                <h1 class="font-poppins text-4xl font-bold leading-tight mb-4">
+                    Jornada <span class="text-[#FFCC00]">Virtual</span><br>2026
+                </h1>
+                
+                <p class="text-blue-100 text-lg mb-10 opacity-90 leading-relaxed">
+                    Formulario oficial de registro para la UTPL. Sus datos se sincronizarán directamente con la hoja de cálculo.
+                </p>
 
-const StatCard = ({ title, count, color, icon: Icon, onClick, active }) => (
-  <button
-    onClick={onClick}
-    className={`p-5 rounded-xl border transition-all duration-200 text-left w-full
-      ${active 
-        ? `bg-${color}-50 border-${color}-500 ring-1 ring-${color}-500 shadow-md` 
-        : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm'
-      }`}
-  >
-    <div className="flex items-center justify-between mb-3">
-      <div className={`p-2 rounded-lg bg-${color}-100 text-${color}-600`}>
-        <Icon size={20} />
-      </div>
-      <span className={`text-2xl font-bold text-slate-700`}>{count}</span>
-    </div>
-    <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">{title}</h3>
-  </button>
-);
-
-export default function App() {
-  const [activeTab, setActiveTab] = useState('ALL');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [selectedDateFilter, setSelectedDateFilter] = useState(null); 
-  const [filteredData, setFilteredData] = useState(STUDENT_DATA);
-
-  // --- CÁLCULO DINÁMICO DE LEADS (Arregla el conteo incorrecto) ---
-  const chartData = useMemo(() => {
-    // 1. Contar registros por fecha
-    const counts = {};
-    STUDENT_DATA.forEach(item => {
-      const date = item.Fecha;
-      if (date) {
-        counts[date] = (counts[date] || 0) + 1;
-      }
-    });
-
-    // 2. Ordenar fechas y formatear para el gráfico
-    return Object.keys(counts).sort().map(date => {
-      // Crear fecha segura evitando timezone issues
-      const [year, month, day] = date.split('-').map(Number);
-      const d = new Date(year, month - 1, day); 
-      
-      const days = ['DOM', 'LUN', 'MAR', 'MIE', 'JUE', 'VIE', 'SAB'];
-      const dayName = days[d.getDay()];
-      const dayNum = d.getDate().toString().padStart(2, '0');
-
-      return {
-        Dia: `${dayName} ${dayNum}`,
-        Leads: counts[date],
-        fullDate: date
-      };
-    });
-  }, []);
-
-  // Lógica de filtrado
-  useEffect(() => {
-    let result = STUDENT_DATA;
-    
-    // 1. Filtro por Categoría
-    if (activeTab !== 'ALL') result = result.filter(item => item.TIPO === activeTab);
-    
-    // 2. Filtro por Gráfico
-    if (selectedDateFilter) {
-      result = result.filter(item => item.Fecha === selectedDateFilter);
-    } else {
-      // 3. Filtro por Rango de Fechas
-      if (startDate || endDate) {
-        result = result.filter(item => {
-          if (!item.Fecha) return false;
-          const itemDate = new Date(item.Fecha);
-          const start = startDate ? new Date(startDate) : null;
-          const end = endDate ? new Date(endDate) : null;
-          if (start && itemDate < start) return false;
-          if (end && itemDate > end) return false;
-          return true;
-        });
-      }
-    }
-
-    // 4. Filtro Buscador
-    if (searchTerm) {
-      const lower = searchTerm.toLowerCase();
-      result = result.filter(i => 
-        i.Nombres.toLowerCase().includes(lower) || 
-        i.Cedula.includes(searchTerm) || 
-        i.Carrera.toLowerCase().includes(lower)
-      );
-    }
-    setFilteredData(result);
-  }, [activeTab, searchTerm, startDate, endDate, selectedDateFilter]);
-
-  const handleBarClick = (date) => {
-    if (selectedDateFilter === date) {
-      setSelectedDateFilter(null);
-    } else {
-      setSelectedDateFilter(date);
-      setStartDate('');
-      setEndDate('');
-    }
-  };
-
-  const counts = {
-    ALL: STUDENT_DATA.length,
-    TEC: STUDENT_DATA.filter(d => d.TIPO === 'TEC').length,
-    MEL: STUDENT_DATA.filter(d => d.TIPO === 'MEL').length,
-    POS: STUDENT_DATA.filter(d => d.TIPO === 'POS').length,
-    OTROS: STUDENT_DATA.filter(d => d.TIPO === 'OTROS').length,
-  };
-
-  const exportToExcel = () => {
-    let tableHTML = `
-      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-      <head>
-        <meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">
-        <!--[if gte mso 9]>
-        <xml>
-        <x:ExcelWorkbook>
-          <x:ExcelWorksheets>
-          <x:ExcelWorksheet>
-            <x:Name>Reporte Isla Mall</x:Name>
-            <x:WorksheetOptions>
-            <x:DisplayGridlines/>
-            </x:WorksheetOptions>
-          </x:ExcelWorksheet>
-          </x:ExcelWorksheets>
-        </x:ExcelWorkbook>
-        </xml>
-        <![endif]-->
-        <style>
-          body { font-family: Arial, sans-serif; font-size: 12px; }
-          table { border-collapse: collapse; width: 100%; }
-          th, td { border: 0.5pt solid #cccccc; padding: 5px; text-align: left; vertical-align: middle; }
-          th { background-color: #002060; color: #ffffff; font-weight: bold; font-size: 13px; height: 30px; }
-          tr:nth-child(even) { background-color: #f2f2f2; }
-          .type-tec { color: #0056b3; font-weight: bold; }
-          .type-mel { color: #b45309; font-weight: bold; }
-          .type-pos { color: #6f42c1; font-weight: bold; }
-          .type-other { color: #dc3545; font-weight: bold; }
-        </style>
-      </head>
-      <body>
-        <table>
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Estudiante</th>
-              <th>Cédula</th>
-              <th>Teléfono</th>
-              <th>Correo</th>
-              <th>Carrera</th>
-              <th>Tipo</th>
-              <th>Promotora</th>
-            </tr>
-          </thead>
-          <tbody>
-    `;
-
-    filteredData.forEach(item => {
-      let typeClass = '';
-      if (item.TIPO === 'TEC') typeClass = 'type-tec';
-      else if (item.TIPO === 'MEL') typeClass = 'type-mel';
-      else if (item.TIPO === 'POS') typeClass = 'type-pos';
-      else typeClass = 'type-other';
-
-      tableHTML += `
-        <tr>
-          <td>${item.Fecha || '-'}</td>
-          <td>${item.Nombres}</td>
-          <td style="mso-number-format:'@'">${item.Cedula || ''}</td>
-          <td style="mso-number-format:'@'">${item.Telefono || ''}</td>
-          <td>${item.Correo || ''}</td>
-          <td>${item.Carrera}</td>
-          <td class="${typeClass}">${item.TIPO}</td>
-          <td>${item.Promotora}</td>
-        </tr>
-      `;
-    });
-
-    tableHTML += `</tbody></table></body></html>`;
-
-    const blob = new Blob([tableHTML], { type: 'application/vnd.ms-excel' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `Reporte_Isla_Mall_${activeTab}_${new Date().toLocaleDateString('es-ES').replace(/\//g, '-')}.xls`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-12">
-      
-      {/* HEADER */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="bg-blue-600 p-2 rounded-lg text-white">
-              <MapPin size={20} />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-slate-800">Isla Mall del Pacífico</h1>
-              <p className="text-xs text-slate-500">Reporte de Admisiones 2026</p>
-            </div>
-          </div>
-          <button 
-            onClick={exportToExcel}
-            className="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-sm shadow-sm"
-          >
-            <Download size={18} />
-            <span className="hidden sm:inline">Exportar Excel (Pro)</span>
-          </button>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-
-        {/* 1. CONTADORES */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <div className="col-span-2 md:col-span-1">
-             <StatCard 
-              title="Total General" 
-              count={counts.ALL} 
-              color="slate" 
-              icon={Users} 
-              active={activeTab === 'ALL'}
-              onClick={() => { setActiveTab('ALL'); setSelectedDateFilter(null); }}
-            />
-          </div>
-          <StatCard 
-            title="Tecnologías (TEC)" 
-            count={counts.TEC} 
-            color="blue" 
-            icon={BookOpen} 
-            active={activeTab === 'TEC'}
-            onClick={() => { setActiveTab('TEC'); setSelectedDateFilter(null); }}
-          />
-          <StatCard 
-            title="Grado (MEL)" 
-            count={counts.MEL} 
-            color="amber" 
-            icon={GraduationCap} 
-            active={activeTab === 'MEL'}
-            onClick={() => { setActiveTab('MEL'); setSelectedDateFilter(null); }}
-          />
-          <StatCard 
-            title="Posgrados (POS)" 
-            count={counts.POS} 
-            color="purple" 
-            icon={FileSpreadsheet} 
-            active={activeTab === 'POS'}
-            onClick={() => { setActiveTab('POS'); setSelectedDateFilter(null); }}
-          />
-          {counts.OTROS > 0 && (
-            <StatCard 
-              title="Sin Categoría" 
-              count={counts.OTROS} 
-              color="red" 
-              icon={LayoutGrid} 
-              active={activeTab === 'OTROS'}
-              onClick={() => { setActiveTab('OTROS'); setSelectedDateFilter(null); }}
-            />
-          )}
-        </div>
-
-        {/* 2. GRÁFICO DE LEADS DINÁMICO */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-2">
-              <BarChart3 className="text-indigo-600" size={20} />
-              <h2 className="text-lg font-bold text-slate-800">Rendimiento de Leads por Día</h2>
-            </div>
-            {selectedDateFilter && (
-              <button 
-                onClick={() => setSelectedDateFilter(null)}
-                className="flex items-center space-x-1 text-xs text-red-500 bg-red-50 px-2 py-1 rounded-full font-medium hover:bg-red-100 transition-colors"
-              >
-                <XCircle size={14} />
-                <span>Borrar filtro de fecha</span>
-              </button>
-            )}
-          </div>
-          
-          <div className="flex space-x-2 overflow-x-auto pb-2">
-            {chartData.map((day, idx) => {
-              const isSelected = selectedDateFilter === day.fullDate;
-              return (
-                <div 
-                  key={idx} 
-                  onClick={() => handleBarClick(day.fullDate)}
-                  className={`flex-1 min-w-[100px] rounded-lg p-4 border flex flex-col items-center justify-end h-36 relative overflow-hidden group transition-all cursor-pointer
-                    ${isSelected 
-                      ? 'bg-indigo-50 border-indigo-500 ring-1 ring-indigo-500 shadow-md' 
-                      : 'bg-slate-50 border-slate-100 hover:border-indigo-300 hover:shadow-sm'
-                    }`}
-                >
-                   {isSelected && <div className="absolute top-2 right-2 w-2 h-2 bg-indigo-500 rounded-full"></div>}
-                   
-                   <div className="text-center z-10 mb-3">
-                      <span className={`text-3xl font-bold transition-colors ${isSelected ? 'text-indigo-700' : 'text-indigo-600'}`}>
-                        {day.Leads}
-                      </span>
-                      <p className={`text-xs font-medium uppercase mt-1 ${isSelected ? 'text-indigo-500' : 'text-slate-400'}`}>Leads</p>
-                   </div>
-                   
-                   <div className="w-full bg-slate-200 rounded-full h-1.5 mb-2">
-                      <div 
-                        className={`h-1.5 rounded-full shadow-lg transition-all duration-300 ${isSelected ? 'bg-indigo-600 w-full' : 'bg-indigo-400 w-full opacity-80'}`}
-                      ></div>
-                   </div>
-                   
-                   <h3 className={`text-xs font-bold uppercase ${isSelected ? 'text-indigo-800' : 'text-slate-500'}`}>
-                    {day.Dia}
-                   </h3>
+                <div class="flex items-center gap-4 bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/5">
+                    <div class="bg-[#FFCC00] p-3 rounded-full shadow-lg">
+                        <svg class="w-6 h-6 text-[#003366]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm">Selección de Centros</p>
+                        <p class="text-xs text-blue-200">Red de Centros Universitarios</p>
+                    </div>
                 </div>
-              );
-            })}
-          </div>
-          {selectedDateFilter && (
-             <p className="text-center text-xs text-indigo-600 font-medium mt-3 animate-pulse">
-               Mostrando registros del día {selectedDateFilter}
-             </p>
-          )}
+            </div>
+            <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-yellow-400 opacity-5 rounded-full"></div>
         </div>
 
-        {/* 3. LISTA Y FILTROS */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <div className="flex flex-col md:flex-row gap-4 justify-between items-center mb-4">
+        <!-- Panel Derecho: Formulario -->
+        <div class="md:w-7/12 p-8 md:p-14 flex flex-col justify-center bg-white relative">
+            <div class="accent-line absolute top-0 left-0 w-full"></div>
             
-            <div className="relative w-full md:w-96">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
-              <input
-                type="text"
-                placeholder="Buscar por nombre, cédula o carrera..."
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-slate-800 font-poppins">Formulario de Registro</h2>
+                <p class="text-slate-500 mt-2">Por favor, ingrese sus datos para continuar.</p>
             </div>
 
-            <div className="flex items-center space-x-2 w-full md:w-auto justify-end">
-               {/* Solo mostrar filtro manual si NO hay filtro por gráfico */}
-               {!selectedDateFilter ? (
-                 <div className="flex items-center space-x-1 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
-                    <Calendar size={16} className="text-slate-400 ml-1" />
-                    <input type="date" className="bg-transparent text-xs outline-none text-slate-600 w-24" onChange={(e) => setStartDate(e.target.value)} value={startDate} />
-                    <span className="text-slate-300">-</span>
-                    <input type="date" className="bg-transparent text-xs outline-none text-slate-600 w-24" onChange={(e) => setEndDate(e.target.value)} value={endDate} />
-                 </div>
-               ) : (
-                 <div className="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg border border-indigo-100">
-                   Filtro activo: {selectedDateFilter}
-                 </div>
-               )}
-            </div>
-          </div>
+            <form id="utplSyncForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Nombres</label>
+                        <input type="text" name="nombre" required 
+                               class="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none transition-all"
+                               placeholder="Ej: Juan Andrés">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Apellidos</label>
+                        <input type="text" name="apellido" required 
+                               class="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none transition-all"
+                               placeholder="Ej: Pérez Castro">
+                    </div>
+                </div>
 
-          <div className="overflow-x-auto rounded-lg border border-slate-100">
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 text-slate-500 font-semibold">
-                <tr>
-                  <th className="px-4 py-3">Fecha</th>
-                  <th className="px-4 py-3">Estudiante</th>
-                  <th className="px-4 py-3">Cédula</th>
-                  <th className="px-4 py-3">Carrera</th>
-                  <th className="px-4 py-3">Tipo</th>
-                  <th className="px-4 py-3 text-right">Promotora</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredData.length > 0 ? filteredData.map((item, index) => (
-                  <tr key={index} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 whitespace-nowrap text-slate-500 text-xs">
-                      {item.Fecha || '-'}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="font-bold text-slate-700">{item.Nombres}</div>
-                      <div className="text-xs text-slate-400">{item.Correo}</div>
-                    </td>
-                    <td className="px-4 py-3 text-slate-500 text-xs font-mono">{item.Cedula || '-'}</td>
-                    <td className="px-4 py-3 text-slate-700 truncate max-w-xs">{item.Carrera}</td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex px-2 py-0.5 rounded text-xs font-bold
-                        ${item.TIPO === 'TEC' ? 'bg-blue-100 text-blue-700' : 
-                          item.TIPO === 'MEL' ? 'bg-amber-100 text-amber-700' : 
-                          item.TIPO === 'POS' ? 'bg-purple-100 text-purple-700' :
-                          'bg-red-100 text-red-700'}`}>
-                        {item.TIPO === 'OTROS' ? 'S/C' : item.TIPO}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right text-xs capitalize text-slate-500">
-                      {item.Promotora}
-                    </td>
-                  </tr>
-                )) : (
-                  <tr>
-                    <td colSpan="6" className="px-4 py-8 text-center text-slate-400">
-                      {selectedDateFilter 
-                        ? `No hay registros para el día ${selectedDateFilter}` 
-                        : "Sin resultados"}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-2 text-right text-xs text-slate-400">
-            Mostrando {filteredData.length} registros
-          </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Número de Cédula</label>
+                    <input type="text" name="cedula" maxlength="10" required 
+                           pattern="[0-9]{10}"
+                           class="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none transition-all"
+                           placeholder="110XXXXXXX">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Centro Universitario</label>
+                    <div class="relative">
+                        <select id="centroSelect" name="centro" required 
+                                class="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none appearance-none cursor-pointer transition-all">
+                            <option value="" disabled selected>Seleccione una opción...</option>
+                        </select>
+                        <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="btnSubmit" 
+                        class="btn-utpl w-full py-5 text-white font-bold rounded-2xl shadow-xl flex items-center justify-center gap-3 text-lg">
+                    <span id="txtBtn">Registrar Participación</span>
+                    <span id="loading" class="hidden"><span class="loader"></span></span>
+                </button>
+            </form>
+
+            <div id="statusMsg" class="hidden mt-8 p-5 rounded-2xl text-center font-semibold transition-all duration-300"></div>
         </div>
-
-      </main>
     </div>
-  );
-}
 
+    <script>
+        // URL de tu Google Apps Script real
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweGWbXlFImsnebDCk33Pknvxz_eV3d7e-X2E9ucaI31U2EjMiny_obmptvEuMOiNfqXw/exec';
 
+        // 1. Población de Centros Universitarios
+        const centros = [
+            "LA CONCORDIA", "MANTA", "PORTOVIEJO", "CHONE", "CALCETA", 
+            "BAHIA", "PEDERNALES", "SANTO DOMINGO", "ESMERALDA", 
+            "QUININDE", "LOS BANCOS"
+        ];
+        
+        const select = document.getElementById('centroSelect');
+        centros.sort().forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            select.appendChild(opt);
+        });
+        const optOtros = document.createElement('option');
+        optOtros.value = "OTROS";
+        optOtros.textContent = "OTROS";
+        select.appendChild(optOtros);
+
+        // 2. Manejo del Formulario
+        const form = document.getElementById('utplSyncForm');
+        const btn = document.getElementById('btnSubmit');
+        const txtBtn = document.getElementById('txtBtn');
+        const loader = document.getElementById('loading');
+        const status = document.getElementById('statusMsg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            btn.disabled = true;
+            txtBtn.textContent = 'Enviando...';
+            loader.classList.remove('hidden');
+            status.classList.add('hidden');
+
+            const formData = new FormData(form);
+            const data = {
+                nombre: formData.get('nombre').toUpperCase(),
+                apellido: formData.get('apellido').toUpperCase(),
+                cedula: formData.get('cedula'),
+                centro: formData.get('centro')
+            };
+
+            try {
+                // Sincronización vía no-cors para GitHub Pages
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                status.textContent = '✅ ¡Éxito! Su registro ha sido sincronizado con el Excel.';
+                status.className = 'mt-8 p-5 rounded-2xl text-center font-semibold bg-green-50 text-green-700 block animate-bounce';
+                form.reset();
+
+            } catch (err) {
+                status.textContent = '❌ Error de sincronización. Reintente por favor.';
+                status.className = 'mt-8 p-5 rounded-2xl text-center font-semibold bg-red-50 text-red-700 block';
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                txtBtn.textContent = 'Registrar Participación';
+                loader.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
