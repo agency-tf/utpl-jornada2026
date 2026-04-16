@@ -15,19 +15,19 @@
         }
         body { 
             font-family: 'Inter', sans-serif;
-            background: #001f3f; /* Fondo exterior oscuro profesional */
+            background: #001f3f; 
         }
         .font-poppins { font-family: 'Poppins', sans-serif; }
         .bg-utpl { background-color: var(--utpl-blue); }
         
-        /* Línea de acento amarilla perfecta en el borde superior derecho */
+        /* Línea de acento amarilla en el borde superior derecho */
         .accent-line {
             height: 6px;
             background-color: var(--utpl-yellow);
             border-top-right-radius: 2rem;
         }
 
-        /* Botón con estilo institucional y sombra suave */
+        /* Botón institucional */
         .btn-utpl {
             background-color: var(--utpl-blue);
             transition: all 0.3s ease;
@@ -38,21 +38,15 @@
             box-shadow: 0 10px 15px -3px rgba(0, 51, 102, 0.2);
         }
 
-        /* Contenedor del Logo: Se eliminó el filtro que causaba el bloque blanco */
-        .logo-container {
-            width: 100%;
-            max-width: 300px;
-            margin-bottom: 2.5rem;
-        }
-
+        /* Logo UTPL: Se muestra sin filtros para evitar que desaparezca */
         .logo-utpl {
-            width: 100%;
+            width: 320px;
             height: auto;
             display: block;
-            border-radius: 0.5rem; /* Pequeño redondeado por si la imagen tiene bordes bruscos */
+            border-radius: 12px;
         }
 
-        /* Contenedor principal con bordes perfectamente alineados */
+        /* Contenedor principal */
         .main-card {
             background: #ffffff;
             border-radius: 2rem;
@@ -76,44 +70,41 @@
     <div class="max-w-5xl w-full main-card overflow-hidden flex flex-col md:flex-row min-h-[600px]">
         
         <!-- Panel Izquierdo: Azul UTPL -->
-        <div class="md:w-5/12 bg-utpl p-10 flex flex-col justify-center text-white">
-            <div class="flex flex-col items-start w-full">
-                <!-- Logo UTPL: Se muestra tal cual es para evitar errores de renderizado -->
-                <div class="logo-container">
-                    <img src="https://utpl.edu.ec/recursos/img/utpl_logo1.png" 
-                         alt="UTPL Decide Ser Más" 
-                         class="logo-utpl shadow-lg"
-                         onerror="this.src='https://via.placeholder.com/300x100?text=UTPL+Logo'">
+        <div class="md:w-5/12 bg-utpl p-12 flex flex-col justify-center text-white">
+            <div class="flex flex-col items-start">
+                <!-- Logo UTPL: Ahora visible y centrado en el panel -->
+                <div class="mb-10 w-full flex justify-center md:justify-start">
+                    <img src="https://utpl.edu.ec/recursos/img/utpl_logo1.png" alt="Logo UTPL" class="logo-utpl">
                 </div>
                 
                 <h1 class="font-poppins text-4xl font-bold leading-tight mb-6">
                     Jornada <span class="text-[#FFCC00]">Virtual</span><br>2026
                 </h1>
                 
-                <p class="text-blue-100 text-lg mb-8 opacity-90 leading-relaxed">
-                    Sistema institucional de registro de asistencia. Sus datos se sincronizarán directamente con la hoja de gestión.
+                <p class="text-blue-100 text-lg mb-10 opacity-90 leading-relaxed">
+                    ¡Bienvenido a tu proceso de inducción! Por favor, regístrate para validar tu asistencia y asegurar tu participación en las actividades académicas.
                 </p>
-            </div>
 
-            <!-- Icono de Red Universitaria (Estilo minimalista) -->
-            <div class="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10 w-full mt-auto">
-                <div class="bg-[#FFCC00] p-3 rounded-full shadow-lg text-[#003366]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                </div>
-                <div>
-                    <p class="font-bold text-sm text-[#FFCC00]">Red Universitaria</p>
-                    <p class="text-xs text-blue-200">Datos sincronizados al instante</p>
+                <!-- Cuadro de información para estudiantes -->
+                <div class="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10 w-full">
+                    <div class="bg-[#FFCC00] p-3 rounded-full shadow-lg text-[#003366]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm text-[#FFCC00]">Tu Centro UTPL</p>
+                        <p class="text-xs text-blue-200">Selecciona el centro más cercano a tu ubicación.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Panel Derecho: Formulario Blanco -->
+        <!-- Panel Derecho: Formulario -->
         <div class="md:w-7/12 p-10 md:p-16 flex flex-col justify-center bg-white relative">
             <div class="accent-line absolute top-0 left-0 w-full"></div>
             
             <div class="mb-10">
                 <h2 class="text-3xl font-bold text-slate-800 font-poppins">Formulario de Registro</h2>
-                <p class="text-slate-500 mt-2 font-medium">Ingrese sus datos para el reporte de la UTPL</p>
+                <p class="text-slate-500 mt-2 font-medium">Completa tus datos para el reporte de inducción</p>
             </div>
 
             <form id="registroForm" class="space-y-6">
@@ -216,7 +207,7 @@
                     body: JSON.stringify(payload)
                 });
 
-                status.textContent = '✅ Registro enviado con éxito.';
+                status.textContent = '✅ Registro enviado con éxito. ¡Bienvenido a la UTPL!';
                 status.className = 'mt-8 p-5 rounded-xl text-center font-semibold bg-green-50 text-green-700 border-green-100 block';
                 form.reset();
 
