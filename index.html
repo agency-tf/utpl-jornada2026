@@ -13,108 +13,140 @@
             --utpl-blue: #003366;
             --utpl-yellow: #FFCC00;
         }
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: #001f3f; /* Fondo exterior oscuro profesional */
+        }
         .font-poppins { font-family: 'Poppins', sans-serif; }
         .bg-utpl { background-color: var(--utpl-blue); }
-        .text-utpl { color: var(--utpl-blue); }
+        
+        /* Línea de acento amarilla perfecta en el borde superior derecho */
         .accent-line {
             height: 6px;
-            background: linear-gradient(90deg, var(--utpl-blue) 0%, var(--utpl-yellow) 100%);
+            background-color: var(--utpl-yellow);
+            border-top-right-radius: 2rem;
         }
+
+        /* Botón con estilo institucional y sombra suave */
         .btn-utpl {
             background-color: var(--utpl-blue);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
         }
         .btn-utpl:hover {
             background-color: #002347;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 51, 102, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 51, 102, 0.2);
         }
+
+        /* Contenedor del Logo: Se eliminó el filtro que causaba el bloque blanco */
+        .logo-container {
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-utpl {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 0.5rem; /* Pequeño redondeado por si la imagen tiene bordes bruscos */
+        }
+
+        /* Contenedor principal con bordes perfectamente alineados */
+        .main-card {
+            background: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Spinner de carga */
         .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--utpl-yellow);
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--utpl-yellow);
             border-radius: 50%;
             width: 18px;
             height: 18px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
+            animation: spin 0.8s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex items-center justify-center p-6">
 
-    <!-- Tarjeta Principal -->
-    <div class="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[620px]">
+    <div class="max-w-5xl w-full main-card overflow-hidden flex flex-col md:flex-row min-h-[600px]">
         
-        <!-- Panel Izquierdo: Branding -->
-        <div class="md:w-5/12 bg-utpl p-10 flex flex-col justify-center text-white relative">
-            <div class="relative z-10">
-                <img src="https://utpl.edu.ec/recursos/img/utpl_logo1.png" alt="Logo UTPL" class="h-20 mb-8 brightness-0 invert object-contain">
+        <!-- Panel Izquierdo: Azul UTPL -->
+        <div class="md:w-5/12 bg-utpl p-10 flex flex-col justify-center text-white">
+            <div class="flex flex-col items-start w-full">
+                <!-- Logo UTPL: Se muestra tal cual es para evitar errores de renderizado -->
+                <div class="logo-container">
+                    <img src="https://utpl.edu.ec/recursos/img/utpl_logo1.png" 
+                         alt="UTPL Decide Ser Más" 
+                         class="logo-utpl shadow-lg"
+                         onerror="this.src='https://via.placeholder.com/300x100?text=UTPL+Logo'">
+                </div>
                 
-                <h1 class="font-poppins text-4xl font-bold leading-tight mb-4">
+                <h1 class="font-poppins text-4xl font-bold leading-tight mb-6">
                     Jornada <span class="text-[#FFCC00]">Virtual</span><br>2026
                 </h1>
                 
-                <p class="text-blue-100 text-lg mb-10 opacity-90 leading-relaxed">
-                    Formulario oficial de registro para la UTPL. Sus datos se sincronizarán directamente con la hoja de cálculo.
+                <p class="text-blue-100 text-lg mb-8 opacity-90 leading-relaxed">
+                    Sistema institucional de registro de asistencia. Sus datos se sincronizarán directamente con la hoja de gestión.
                 </p>
+            </div>
 
-                <div class="flex items-center gap-4 bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/5">
-                    <div class="bg-[#FFCC00] p-3 rounded-full shadow-lg">
-                        <svg class="w-6 h-6 text-[#003366]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="font-bold text-sm">Selección de Centros</p>
-                        <p class="text-xs text-blue-200">Red de Centros Universitarios</p>
-                    </div>
+            <!-- Icono de Red Universitaria (Estilo minimalista) -->
+            <div class="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10 w-full mt-auto">
+                <div class="bg-[#FFCC00] p-3 rounded-full shadow-lg text-[#003366]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </div>
+                <div>
+                    <p class="font-bold text-sm text-[#FFCC00]">Red Universitaria</p>
+                    <p class="text-xs text-blue-200">Datos sincronizados al instante</p>
                 </div>
             </div>
-            <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-yellow-400 opacity-5 rounded-full"></div>
         </div>
 
-        <!-- Panel Derecho: Formulario -->
-        <div class="md:w-7/12 p-8 md:p-14 flex flex-col justify-center bg-white relative">
+        <!-- Panel Derecho: Formulario Blanco -->
+        <div class="md:w-7/12 p-10 md:p-16 flex flex-col justify-center bg-white relative">
             <div class="accent-line absolute top-0 left-0 w-full"></div>
             
-            <div class="mb-10 text-center md:text-left">
+            <div class="mb-10">
                 <h2 class="text-3xl font-bold text-slate-800 font-poppins">Formulario de Registro</h2>
-                <p class="text-slate-500 mt-2">Por favor, ingrese sus datos para continuar.</p>
+                <p class="text-slate-500 mt-2 font-medium">Ingrese sus datos para el reporte de la UTPL</p>
             </div>
 
-            <form id="utplSyncForm" class="space-y-6">
+            <form id="registroForm" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Nombres</label>
+                    <div class="field-group">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Nombres</label>
                         <input type="text" name="nombre" required 
-                               class="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none transition-all"
+                               class="w-full px-5 py-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none transition-all"
                                placeholder="Ej: Juan Andrés">
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Apellidos</label>
+                    <div class="field-group">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Apellidos</label>
                         <input type="text" name="apellido" required 
-                               class="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none transition-all"
+                               class="w-full px-5 py-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none transition-all"
                                placeholder="Ej: Pérez Castro">
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Número de Cédula</label>
+                <div class="field-group">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Número de Cédula</label>
                     <input type="text" name="cedula" maxlength="10" required 
                            pattern="[0-9]{10}"
-                           class="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none transition-all"
+                           title="Debe ingresar exactamente 10 dígitos numéricos"
+                           class="w-full px-5 py-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none transition-all"
                            placeholder="110XXXXXXX">
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Centro Universitario</label>
+                <div class="field-group">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Centro Universitario</label>
                     <div class="relative">
                         <select id="centroSelect" name="centro" required 
-                                class="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none appearance-none cursor-pointer transition-all">
-                            <option value="" disabled selected>Seleccione una opción...</option>
+                                class="w-full px-5 py-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#003366] outline-none appearance-none cursor-pointer transition-all">
+                            <option value="" disabled selected>Seleccione su ubicación...</option>
                         </select>
                         <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -123,29 +155,27 @@
                 </div>
 
                 <button type="submit" id="btnSubmit" 
-                        class="btn-utpl w-full py-5 text-white font-bold rounded-2xl shadow-xl flex items-center justify-center gap-3 text-lg">
+                        class="btn-utpl w-full py-5 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-3 text-lg">
                     <span id="txtBtn">Registrar Participación</span>
-                    <span id="loading" class="hidden"><span class="loader"></span></span>
+                    <div id="loader" class="hidden loader"></div>
                 </button>
             </form>
 
-            <div id="statusMsg" class="hidden mt-8 p-5 rounded-2xl text-center font-semibold transition-all duration-300"></div>
+            <div id="status" class="hidden mt-8 p-5 rounded-xl text-center font-semibold border-2 transition-all"></div>
         </div>
     </div>
 
     <script>
-        // URL de tu Google Apps Script real
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweGWbXlFImsnebDCk33Pknvxz_eV3d7e-X2E9ucaI31U2EjMiny_obmptvEuMOiNfqXw/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAvwQr4tk8uSyopc7tb8reMjBNU0rvLzdz1S2tgZQlveFsbSG0-sUOFRJE4GQV8QUsNg/exec';
 
-        // 1. Población de Centros Universitarios
         const centros = [
             "LA CONCORDIA", "MANTA", "PORTOVIEJO", "CHONE", "CALCETA", 
             "BAHIA", "PEDERNALES", "SANTO DOMINGO", "ESMERALDA", 
             "QUININDE", "LOS BANCOS"
-        ];
+        ].sort();
         
         const select = document.getElementById('centroSelect');
-        centros.sort().forEach(c => {
+        centros.forEach(c => {
             const opt = document.createElement('option');
             opt.value = c;
             opt.textContent = c;
@@ -156,12 +186,11 @@
         optOtros.textContent = "OTROS";
         select.appendChild(optOtros);
 
-        // 2. Manejo del Formulario
-        const form = document.getElementById('utplSyncForm');
+        const form = document.getElementById('registroForm');
         const btn = document.getElementById('btnSubmit');
         const txtBtn = document.getElementById('txtBtn');
-        const loader = document.getElementById('loading');
-        const status = document.getElementById('statusMsg');
+        const loader = document.getElementById('loader');
+        const status = document.getElementById('status');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -171,32 +200,29 @@
             loader.classList.remove('hidden');
             status.classList.add('hidden');
 
-            const formData = new FormData(form);
-            const data = {
-                nombre: formData.get('nombre').toUpperCase(),
-                apellido: formData.get('apellido').toUpperCase(),
-                cedula: formData.get('cedula'),
-                centro: formData.get('centro')
+            const payload = {
+                nombre: form.nombre.value.toUpperCase(),
+                apellido: form.apellido.value.toUpperCase(),
+                cedula: form.cedula.value,
+                centro: form.centro.value
             };
 
             try {
-                // Sincronización vía no-cors para GitHub Pages
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     cache: 'no-cache',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(payload)
                 });
 
-                status.textContent = '✅ ¡Éxito! Su registro ha sido sincronizado con el Excel.';
-                status.className = 'mt-8 p-5 rounded-2xl text-center font-semibold bg-green-50 text-green-700 block animate-bounce';
+                status.textContent = '✅ Registro enviado con éxito.';
+                status.className = 'mt-8 p-5 rounded-xl text-center font-semibold bg-green-50 text-green-700 border-green-100 block';
                 form.reset();
 
             } catch (err) {
-                status.textContent = '❌ Error de sincronización. Reintente por favor.';
-                status.className = 'mt-8 p-5 rounded-2xl text-center font-semibold bg-red-50 text-red-700 block';
-                console.error(err);
+                status.textContent = '❌ Error de conexión. Intente nuevamente.';
+                status.className = 'mt-8 p-5 rounded-xl text-center font-semibold bg-red-50 text-red-700 border-red-100 block';
             } finally {
                 btn.disabled = false;
                 txtBtn.textContent = 'Registrar Participación';
